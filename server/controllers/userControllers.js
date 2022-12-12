@@ -28,14 +28,14 @@ module.exports.login = async (req,res) => {
         //     password: req.body.password
         // })
         
-        console.log("🚀 ~ user", user)
+        console.log("user", user)
 
         if (!user) return res.send({success: false, errorId: 1})
         res.send({success: true});
          
     } catch (error) {
 
-        console.log("Register error", error.message);
+        console.log("Login error", error.message);
         res.send({success: false, error: error.message});
         
     }

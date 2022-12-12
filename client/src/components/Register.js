@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import axios from 'axios'
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 
 function Register() {
+
+    const navigate = useNavigate();
 
     const [data, setData] = useState({
         username: '',
@@ -13,7 +16,11 @@ function Register() {
     const handleRegister = async () => {
 
         const response = await axios.post('/users/register', data)
-        console.log("response",response)
+        console.log("response",response);
+
+        if (response.data.success) {
+            navigate("/login")
+        }
         
     }
 
