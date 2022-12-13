@@ -40,3 +40,24 @@ module.exports.login = async (req,res) => {
         
     }
 }
+
+module.exports.list = async (req,res) => {
+
+    try {
+
+        console.log('List')
+
+        const users = await User.find().select('-password -__v' )
+        console.log(users)
+
+        res.send({success: true, users});
+         
+    } catch (error) {
+
+        console.log("List error", error.message);
+        res.send({success: false, error: error.message});
+        
+    }
+}
+
+//1.27 min
