@@ -12,6 +12,21 @@ export default function ContextProvider({children}) {
                     ...state,
                     user: {...action.payload}
                 }
+
+            case 'loadUsers':
+                return {
+                    ...state,
+                    users: [...action.payload]
+                }
+
+            case 'removeUser':
+    
+                    const oldUsers = [...state.users.filter(item => item._id !== action.payload)]
+                    return {
+                        ...state, 
+                        users: [...oldUsers]
+                    }
+
                 default:
 
                 return state
@@ -19,7 +34,9 @@ export default function ContextProvider({children}) {
     }
 
     const [state, dispatchState] = useReducer(reducer, {
-        user: {}
+        user: {},
+        users: [],
+        products: []
     })
 
     return <AppContext.Provider value={{state, dispatchState}}>

@@ -7,6 +7,8 @@ import Register from './components/Register';
 import Login from './components/Login';
 import ContextProvider from './components/Context';
 import Dashboard from './components/Dashboard';
+import AdminLayout from './layouts/AdminLayout';
+import EditUser from './components/EditUser';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -14,11 +16,15 @@ root.render(
 
     <ContextProvider>
         <BrowserRouter>
-                <App />
                 <Routes>
+                    <Route element={<App />} path='/'/>
                     <Route element={<Register />} path='/register'/>
                     <Route element={<Login />} path='/login'/>
-                    <Route element={<Dashboard />} path='/dashboard'/>
+
+                    <Route element={<AdminLayout />}>
+                        <Route element={<Dashboard />} path='/dashboard'/>
+                        <Route element={<EditUser />} path='/dashboard/users/edit/:id' />
+                    </Route>
                 </Routes>
         </BrowserRouter>
     </ContextProvider>
