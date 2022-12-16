@@ -11,6 +11,7 @@ import AdminLayout from './layouts/AdminLayout';
 import EditUser from './components/EditUser';
 import Products from './components/Products';
 import AddProduct from './components/AddProduct';
+import EditProduct from './components/EditProduct';
 
 
 
@@ -29,6 +30,7 @@ root.render(
                         <Route element={<EditUser />} path='/dashboard/users/edit/:id' />
                         <Route element={<Products />} path='/dashboard/products' />
                         <Route element={<AddProduct />} path='/dashboard/products/add' />
+                        <Route element={<EditProduct />} path='/dashboard/products/edit/:id' />
                     </Route>
                 </Routes>
         </BrowserRouter>

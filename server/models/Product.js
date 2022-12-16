@@ -14,7 +14,7 @@ const productSchema = new Schema({
     },
     description: String,
     image: String,
-    size: [String]
+    sizes: [String]
 })
 
 module.exports = mongoose.model('Product', productSchema)

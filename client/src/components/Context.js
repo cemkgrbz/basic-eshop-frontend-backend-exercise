@@ -33,6 +33,34 @@ export default function ContextProvider({children}) {
                         ...state,
                         products: [...action.payload]
                     }
+                    
+            case ('addProduct'):
+
+                    return {
+                        ...state,
+                        products: [...state.products, action.payload]
+                    }
+            
+            case 'removeProduct':
+                    
+                    const oldProducts = [...state.products.filter(item => item._id !== action.payload)]
+
+                    return {
+                        ...state, 
+                        products: [...oldProducts]
+                    }
+
+            case 'editProduct':
+
+                    const editProducts = [...state.products]
+                    const idx = editProducts.findIndex(item => item._id === action.payload._id)
+
+                    editProducts[idx] = {...action.payload}
+
+                    return {
+                        ...state,
+                        products: [...editProducts]
+                    }
 
                 default:
 
