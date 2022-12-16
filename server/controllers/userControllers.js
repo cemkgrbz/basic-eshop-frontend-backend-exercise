@@ -106,10 +106,17 @@ module.exports.edit = async (req,res) => {
 
         console.log('Edit', req.body)
 
+        if (!req.body.username ||
+            !req.body.email ||
+            !req.body.password
+            ) return res.send({success: false, errorId: 3})
+
         const {_id, ...user} = req.body
 
         const updatedUser = await User.findByIdAndUpdate({_id}, {...user}, {new: true})
         console.log('updatedUser', updatedUser)
+
+        if (!updatedUser) return res.send({success: false, errorId: 1})
 
 
         res.send({success: true});
@@ -121,5 +128,3 @@ module.exports.edit = async (req,res) => {
         
     }
 }
-
-//1.24

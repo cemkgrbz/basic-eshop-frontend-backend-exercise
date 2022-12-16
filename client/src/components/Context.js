@@ -26,6 +26,13 @@ export default function ContextProvider({children}) {
                         ...state, 
                         users: [...oldUsers]
                     }
+                    
+            case 'loadProducts':
+
+                    return {
+                        ...state,
+                        products: [...action.payload]
+                    }
 
                 default:
 

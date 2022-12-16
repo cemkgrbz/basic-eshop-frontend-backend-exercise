@@ -32,6 +32,8 @@ function EditUser() {
     const handleSave = async () => {
 
         const response = await axios.patch('/users/edit', data)
+
+        if (response.data.success) navigate('/dashboard')
     }
 
     return (
