@@ -4,8 +4,8 @@ import {IoMdAddCircle} from 'react-icons/io'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { AppContext } from './Context';
-import {MdDeleteForever} from 'react-icons/md'
-import {FiEdit} from 'react-icons/fi';
+
+import ProductCardAdmin from "./ProductCardAdmin";
 
 
 function Products() {
@@ -33,9 +33,9 @@ function Products() {
     const handleDelete = async (id) => {
 
         const response = await axios.delete('/products/delete/' + id)
-        console.log("Delete ~ response", response)
+        console.log("🚀 ~ handleDelete ~ response", response)
 
-        if (response.data.success) return dispatchState({
+        if (response.data.success) dispatchState({
             type: 'removeProduct',
             payload: id
         })
@@ -52,16 +52,11 @@ function Products() {
             />
         </Link>
         {
-            state.products.map(item => <div key={item._id} className="flex items-center p-4 gap-4"> {item.name} || {item.price}
-            <MdDeleteForever className='hover:text-red-500 hover:cursor-pointer'
-                onClick={() => handleDelete(item._id)}
-                />
-                <Link to={'/dashboard/products/edit/' + item._id}>
-                    <FiEdit 
-                        className='hover:text-red-500 hover:cursor-pointer'
-                    />
-                </Link>
-                </div>)
+            state.products.map(item => <ProductCardAdmin 
+            key={item._id}
+            product={item}
+            handleDelete={handleDelete}
+            />)
         }
         </div>
         );

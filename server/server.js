@@ -10,6 +10,8 @@ dbConnect();
 app.use(express.json())
 app.use('/users', require('./routes/userRoutes'))
 app.use('/products', require('./routes/productRoutes'))
+app.use('/categories', require('./routes/categoryRoutes'))
+
 
     
 

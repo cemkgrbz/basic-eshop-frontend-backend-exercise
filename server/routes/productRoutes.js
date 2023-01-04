@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
       cb(null, './server/uploads')
     },
     filename: function (req, file, cb) {
-        console.log("🚀 ~ INSIDE DESTINATION: file:", file)
+        console.log("INSIDE DESTINATION: file:", file)
 
         let extension = ''
 
@@ -25,11 +25,11 @@ const storage = multer.diskStorage({
 
 const uploadMulterAdvanced = multer({ storage: storage })
 
-router.post('/add', uploadMulterSimple.single('image'),  productController.add)
+router.post('/add', uploadMulterAdvanced.single('image'),  productController.add)
 router.get('/list', productController.list)
 router.get('/findone', productController.findone)
 router.delete('/delete/:_id', productController.delete)
-router.post('/edit', productController.edit)
+router.post('/edit', uploadMulterAdvanced.single('image'),productController.edit)
 
 
 

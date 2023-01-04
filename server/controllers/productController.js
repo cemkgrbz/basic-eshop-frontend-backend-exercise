@@ -6,6 +6,8 @@ module.exports.add = async (req, res) => {
 
         console.log("product add", req.body)
 
+        req.body.image = req.file.filename
+
         const newProduct = await Product.create(req.body)
         console.log("New Product:", newProduct)
         
@@ -91,6 +93,9 @@ module.exports.edit = async (req, res) => {
         console.log("product edit", req.body)
 
         const {_id, ...product} = req.body
+
+        product.image = req.file.filename
+
         const updatedProduct = await Product.findByIdAndUpdate({_id}, {...product}, {new: true}) 
 
         if (!updatedProduct) return res.sen({success: false, errorId:1})
