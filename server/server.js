@@ -1,8 +1,8 @@
 const express = require('express');
+const app = express();
 
 require('dotenv').config();
 
-const app = express();
 
 const dbConnect = require('./config/db');
 dbConnect();
@@ -17,8 +17,12 @@ app.get('/', (req,res) => {
     res.send("Hello world!")
 })
 
+
+app.use('/images', express.static('./server/uploads'))
+
+
 const port = process.env.PORT || 4004;
 console.log(port)
 app.listen(port, () => {
-    console.log('Server is up and running!')
+    console.log('Server is up and running!', port)
 })
