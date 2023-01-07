@@ -1,7 +1,6 @@
 import axios from "axios";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import {MdDeleteForever} from 'react-icons/md'
-import Header from "./Header";
 import {Link} from 'react-router-dom';
 import {FiEdit} from 'react-icons/fi';
 import { AppContext } from "./Context";
@@ -30,6 +29,7 @@ function Dashboard() {
 
         getData();
     }, [])
+    
 
     const handleDelete = async (id) => {
         console.log("id -", id)

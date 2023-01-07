@@ -62,6 +62,42 @@ export default function ContextProvider({children}) {
                         products: [...editProducts]
                     }
 
+            case 'logout':
+
+                    return {
+                        user: {},
+                        users: [],
+                        products: []
+
+                    }
+
+            case 'addToCart':
+
+                    return {
+                        ...state,
+                        user: {
+                            ...state.user,
+                            cart: [...state.user.cart, action.payload]
+                        }
+                    }
+
+            case 'deleteFromCart':
+
+                    return {
+                        ...state,
+                        user: {
+                            ...state.user,
+                            cart: [...action.payload]
+                        }
+                    }
+
+            case 'addProducts':
+
+                    return {
+                        ...state, 
+                        products: [...state.products, ...action.payload]
+                    }
+
                 default:
 
                 return state
@@ -78,3 +114,4 @@ export default function ContextProvider({children}) {
         {children}
     </AppContext.Provider>
 } 
+

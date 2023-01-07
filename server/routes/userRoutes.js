@@ -10,6 +10,8 @@ router.get('/list', userController.list);
 router.get('/findone/:_id', userController.findOne);
 router.delete('/delete/:_id', userController.delete);
 router.patch('/edit', userController.edit);
+router.post('/addtocart', userController.addToCart);
+router.post('/removefromcart', userController.removeFromCart);
 
 
 

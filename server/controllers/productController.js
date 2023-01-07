@@ -29,12 +29,21 @@ module.exports.list = async (req, res) => {
 
     try {
 
-        console.log("product list")
+        console.log("product list", req.query)
 
-        const products = await Product.find()
+        const skip = req.query.skip ===undefined ? 0 : Number(req.query.skip)
+
+        const products = await Product
+        .find()
+        .sort('-_id')
+        .limit(2)
+        .skip(skip)
+
+        const total = await Product.countDocuments()
+
         console.log(products)
 
-        res.send({success: true, products})
+        res.send({success: true, products, total})
         
     } catch (error) {
 

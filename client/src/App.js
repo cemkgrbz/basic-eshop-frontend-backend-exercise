@@ -1,53 +1,78 @@
-import React, { useContext, useState } from "react";
+import HeaderUser from './components/HeaderUser'
 import axios from 'axios'
-import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
-import { AppContext } from './components/Context'
+import { useContext, useEffect, useState } from 'react';
+import { AppContext } from './components/Context';
+import CardBuyers from './components/CardBuyers'
 
 
-function Login() {
 
-    const navigate = useNavigate();
-    const {state, dispatchState} = useContext(AppContext);
+function App() {
 
-    const [data, setData] = useState({
-        email: '',
-        password: ''
-      })
+  const {state, dispatchState} = useContext(AppContext)
+
+  console.log("app - state", state)
+
+  const [total, setTotal] = useState(0)
+
+  useEffect(() => {
+
+    const getData = async () => {
+
+      const response = await axios.get('products/list')
+      console.log(response)
+
+      if (response.data.success) 
+      
+        dispatchState({
+          type: 'loadProducts',
+          payload: response.data.products
+        })
+
+      setTotal(response.data.total)
+
+    }
+
+    getData()
+  }, [])
+
+  const handleLoadMore = async () => {
+
+    const response = await axios.get('products/list?skip=' + state.products.length)
+      console.log(response)
+
+      if (response.data.success) 
+      
+        dispatchState({
+          type: 'addProducts',
+          payload: response.data.products
+        })
+
+      setTotal(response.data.total)
+
+    console.log("handleLoadMore")
     
-      const handleLogin = async () => {
-    
-        const response = await axios.post('/users/login', data)
-        console.log("handleLogin ~ response", response)
+  }
 
-        if (response.data.success) {
-          dispatchState({
-            type: 'login',
-            payload: response.data.user
-          });
+  return (
+    <div className='flex items-center w-full h-[100vh] flex-col gap-[20px]'>
+      <HeaderUser />
+    {
+      state.products.map(item => <CardBuyers key={item._id} product={item} />)
+    }
 
-          navigate('/dashboard')
-        } else {
+{  
+      state.products.length > 0 && 
+      state.products.length < total ?
 
-          if (response.data.errorId === 1) alert('Wrong email or password')
-    
+      <button
+          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          onClick={handleLoadMore}
+        >Load more</button>
+
+        : 'No more products to load'
       }
-      }
-
-      return (
-        <div className="flex flex-col gap-[2rem] w-fit items-end m-auto mt-[10rem] bg-slate-800 p-5 text-white ">
-            <label>
-                E-mail: <input value={data.email} onChange={e => setData({...data, email: e.target.value})} className="border-2 rounded text-black"/>
-            </label>
-            <label>
-                Password: <input value={data.password} onChange={e => setData({...data, password: e.target.value})} className="border-2 rounded text-black"/>
-            </label>
-            <button onClick={handleLogin} className="border-2 p-2 w-full hover:bg-red-600 hover:text-white rounded">Login</button>
-            <Link to={"/register"}><div>Register</div></Link>
-
-    
-        </div> 
-        );
+    </div>
+  );
 }
 
-export default Login;
+export default App;

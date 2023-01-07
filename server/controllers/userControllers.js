@@ -31,7 +31,7 @@ module.exports.login = async (req,res) => {
         console.log("user", user)
 
         if (!user) return res.send({success: false, errorId: 1})
-        res.send({success: true});
+        res.send({success: true, user});
          
     } catch (error) {
 
@@ -124,6 +124,66 @@ module.exports.edit = async (req,res) => {
     } catch (error) {
 
         console.log("Edit error", error.message);
+        res.send({success: false, error: error.message});
+        
+    }
+}
+
+module.exports.addToCart = async (req,res) => {
+
+    try {
+
+        console.log('Add to cart', req.body)
+
+        const user = await User.findByIdAndUpdate(
+            {_id: req.body._id},
+            {
+                $push: {
+                    cart: req.body.product
+                }
+            },
+            {new: true}
+        )
+
+            console.log("cart user", user)
+
+        res.send({success: true});
+         
+    } catch (error) {
+
+        console.log("Add to cart error", error.message);
+        res.send({success: false, error: error.message});
+        
+    }
+}
+
+module.exports.removeFromCart = async (req,res) => {
+
+    try {
+
+        console.log('Remove from cart', req.body)
+
+        const user = await User.findById(req.body._id)
+
+        console.log("🚀 ~ file: userControllers.js:167 ~ module.exports.removeFromCart= ~ user", user)
+
+        const cart = user.cart.filter(item => item._id !== req.body.productId)
+        console.log("🚀 ~ file: userControllers.js:171 ~ module.exports.removeFromCart= ~ cart", cart)
+
+
+        const updatedUser = await User.findByIdAndUpdate(
+            {_id: req.body._id},
+            {cart},
+            {new: true}
+        )
+        console.log("🚀 ~ file: userControllers.js:179 ~ module.exports.removeFromCart= ~ updatedUser", updatedUser)
+
+
+        res.send({success: true, cart});
+         
+    } catch (error) {
+
+        console.log("Remove from cart error", error.message);
         res.send({success: false, error: error.message});
         
     }

@@ -72,4 +72,42 @@ module.exports.deleteParams = async (req, res) => {
     }
 }
 
-//0.57
+module.exports.edit = async (req, res) => {
+
+    try {
+    
+        console.log("Edit", req.body)
+
+        const updatedCategory = await Category.findByIdAndUpdate(
+            {_id: req.body._id},
+            {name: req.body.name, description: req.body.description},
+            {new: true})
+
+        res.send({success: true, category: updatedCategory})
+    } catch (error) {
+        console.log("edit error", error)
+        res.send({success: false, error: error.message})
+
+    }
+}
+
+module.exports.editDestructuring = async (req, res) => {
+
+    try {
+    
+        console.log("Edit", req.body)
+
+        const {_id, ...document} = req.body
+
+        const edited = await Category.findByIdAndUpdate(
+            {_id: req.body._id},
+            {...document},
+            {new: true})
+
+        res.send({success: true})
+    } catch (error) {
+        console.log("edit error", error)
+        res.send({success: false, error: error.message})
+
+    }
+}
