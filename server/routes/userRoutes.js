@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const userController  = require('../controllers/userControllers.js')
+const userController  = require('../controllers/userController.js')
 
 router.post('/register', userController.register);
 router.post('/login', userController.login);
@@ -12,6 +12,7 @@ router.delete('/delete/:_id', userController.delete);
 router.patch('/edit', userController.edit);
 router.post('/addtocart', userController.addToCart);
 router.post('/removefromcart', userController.removeFromCart);
+router.post('/wishlist/add', userController.addToWishlist);
 
 
 

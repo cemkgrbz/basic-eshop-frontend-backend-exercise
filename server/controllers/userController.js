@@ -188,3 +188,31 @@ module.exports.removeFromCart = async (req,res) => {
         
     }
 }
+
+module.exports.addToWishlist = async (req,res) => {
+
+    try {
+
+        console.log('Add to wishlist', req.body)
+
+        const user = await User.findByIdAndUpdate(
+            {_id: req.body.user},
+            {
+                $push: {
+                    wishlist: req.body.product
+                }
+            },
+            {new: true}
+        )
+            console.log("🚀 ~ file: userController.js:207 ~ module.exports.addToWishlist= ~ user", user)
+            
+
+        res.send({success: true});
+         
+    } catch (error) {
+
+        console.log("Add to wishlist error", error.message);
+        res.send({success: false, error: error.message});
+        
+    }
+}
