@@ -4,6 +4,8 @@ import {CiLogin} from 'react-icons/ci'
 import { useContext } from 'react'
 import { AppContext } from './Context'
 import Logo from '../images/big-cat.png'
+import { AiFillHeart } from 'react-icons/ai'
+
 
 
 
@@ -40,6 +42,7 @@ function HeaderUser() {
         <span>{state.user?.cart?.length}</span>
         </Link>
         <Link to='/login'><CiLogin className="text-[2rem] hover:text-green-500 duration-200 cursor-pointer"/></Link>
+        <Link to='/wishlist'><AiFillHeart className="text-[2rem] hover:text-green-500 duration-200 cursor-pointer"/></Link>
     </div>
 </header> );
 }

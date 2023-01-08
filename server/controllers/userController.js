@@ -216,3 +216,59 @@ module.exports.addToWishlist = async (req,res) => {
         
     }
 }
+
+module.exports.removeFromWishlist = async (req, res) => {
+
+    try {
+        console.log('Hello from remove from wishlist', req.body)
+
+       
+        const user = await User.findById(req.body.user) // step 1 find the user
+
+        const wishlist = user.wishlist.filter(item => { // step 2 filter the wishlist array
+            return item.toString() !== req.body.product
+             
+            // return item != req.body.product //or this
+
+        })
+        
+        console.log("🚀 ~ module.exports.removeFromWishlist= ~ wishlist", wishlist)
+
+        // step 3 update the user in the db
+
+        const updatedUser = await User.findByIdAndUpdate(
+            {_id: req.body.user },
+            {wishlist},
+            {new: true}
+        )
+        console.log("🚀 ~ module.exports.removeFromWishlist= ~ updatedUser", updatedUser)
+
+        res.send({success: true, wishlist})
+    } catch (error) {
+        console.log("🚀 ~ remove from wishlist error", error.message)
+
+        res.send({success: false, error: error.message})
+    }
+
+}
+
+module.exports.listWishlist = async (req, res) => {
+
+    try {
+        console.log('Hello from list wishlist', req.params)
+
+       const user = await User
+       .findById(req.params.user)
+        .populate({path: 'wishlist', select: '-__v'})
+
+       console.log("🚀 ~ module.exports.listWishlist= ~ user", user)
+       
+
+        res.send({success: true, products: user.wishlist})
+    } catch (error) {
+        console.log("🚀 ~ list wishlist error", error.message)
+
+        res.send({success: false, error: error.message})
+    }
+
+}

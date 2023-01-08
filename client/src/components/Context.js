@@ -98,6 +98,26 @@ export default function ContextProvider({children}) {
                         products: [...state.products, ...action.payload]
                     }
 
+            case 'addToWishlist':
+
+                    return {
+                        ...state,
+                        user: {
+                            ...state.user,
+                            wishlist: [...state.user.wishlist, action.payload]
+                        }
+                    }
+
+            case 'deleteFromWishlist':
+
+                    return {
+                        ...state,
+                        user: {
+                            ...state.user,
+                            wishlist: [...action.payload]
+                        }
+                    }
+
                 default:
 
                 return state

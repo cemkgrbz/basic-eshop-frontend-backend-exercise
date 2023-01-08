@@ -32,15 +32,35 @@ function CardBuyers({product}) {
 	}
 
 	const handleAddToWishlist = async () => {
+
+		if (!state.user._id) return alert('You must be logged in to use the wishlist feature')
 		
 		const response = await axios.post('/users/wishlist/add', {
 			user: state.user._id,
 			product: product._id
 		})
+		console.log("🚀 ~ file: CardBuyers.js:40 ~ handleAddToWishlist ~ response", response)
+
+		if (response.data.success) dispatchState({
+			type: 'addToWishlist',
+			payload: product._id
+		})
 	}
 
-	const handleRemoveFromWishlist = () => {
+	const handleRemoveFromWishlist = async () => {
 
+		if (!state.user._id) return alert('You must be logged in to use the wishlist feature')
+
+		const response = await axios.post('/users/wishlist/delete', {
+			user: state.user._id,
+			product: product._id
+		})
+		console.log("🚀 ~ handleWishlist ~ response", response)
+
+		if (response.data.success) dispatchState({
+			type: 'deleteFromWishlist',
+			payload: response.data.wishlist
+		})
 	}
 
     return ( 
