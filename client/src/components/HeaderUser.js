@@ -1,23 +1,32 @@
-import {Link} from 'react-router-dom'
 import {BsCart2} from 'react-icons/bs'
-import {CiLogin} from 'react-icons/ci'
+import {CiLogin, CiLogout} from 'react-icons/ci'
+import {FaUserCog} from 'react-icons/fa'
+import { AiFillHeart } from 'react-icons/ai'
+import Logo from '../images/big-cat.png'
+import {Link, useNavigate} from 'react-router-dom'
 import { useContext } from 'react'
 import { AppContext } from './Context'
-import Logo from '../images/big-cat.png'
-import { AiFillHeart } from 'react-icons/ai'
-
-
-
 
 function HeaderUser() {
 
-    const {state} = useContext(AppContext)
+    const {state, dispatchState} = useContext(AppContext)
 
-    return (  <header class="header sticky top-0 bg-white shadow-md flex items-center justify-between px-8 py-02 mt-[20px] min-w-[80%]">
+    const navigate = useNavigate()
 
-    <h1 className="w-3/12">
+    const handleLogout = () => {
+        dispatchState({
+            type: 'logoutUser'
+        })
 
-         <Link to="/"><img src={Logo} className='w-[50px] h-[50px] object-contain' /></Link>
+        navigate('/')
+    }
+
+    return ( 
+        <header class="header sticky top-0 bg-white shadow-md flex items-center justify-between px-8 py-02 mt-[20px] min-w-[80%]">
+
+    <h1 class="w-3/12">
+
+      <Link to='/'><img src={Logo} className='w-[50px] h-[50px] object-contain' alt=''/></Link>
     </h1>
 
 
@@ -37,14 +46,30 @@ function HeaderUser() {
     </nav>
 
 
-    <div className="w-3/12 flex justify-end gap-5 items-center">
-        <Link to='/cart'><BsCart2 className="text-[2rem] hover:text-green-500 duration-200 cursor-pointer"/>
-        <span>{state.user?.cart?.length}</span>
-        </Link>
-        <Link to='/login'><CiLogin className="text-[2rem] hover:text-green-500 duration-200 cursor-pointer"/></Link>
+    <div class="w-3/12 flex justify-end items-center gap-[20px]">
+        <Link to='/cart'><BsCart2 className="text-[2rem] hover:text-green-500 duration-200 cursor-pointer"/><span>{
+            state.user._id ?
+              state.user.cart.reduce((total, item) => total += item.quantity , 0)
+            :
+
+            0
+          }</span></Link>
+
+          {
+            state.user._id ?
+
+            <>
+                <CiLogout className="text-[2rem]  hover:text-green-500 duration-200 cursor-pointer" onClick={handleLogout}/>
+                <Link to='/dashboard'><FaUserCog className="text-[2rem] hover:text-green-500 duration-200 cursor-pointer" /></Link>
+            </>
+            :
+            <Link to='/login'><CiLogin className="text-[2rem] hover:text-green-500 duration-200 cursor-pointer"/></Link>
+        }
+
         <Link to='/wishlist'><AiFillHeart className="text-[2rem] hover:text-green-500 duration-200 cursor-pointer"/></Link>
     </div>
-</header> );
+</header>
+     );
 }
 
 export default HeaderUser;

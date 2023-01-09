@@ -1,16 +1,12 @@
-import React from "react";
+import {FiUsers, FiLogOut} from 'react-icons/fi'
+import {FaProductHunt, FaHome} from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom';
-import { AiOutlineHome } from "react-icons/ai";
-import {FiUsers, FiLogOut} from 'react-icons/fi';
-import {FaProductHunt} from 'react-icons/fa';
 import { useContext } from 'react';
 import { AppContext } from './Context';
 
-
-
 function Header() {
 
-  const {dispatchState} = useContext(AppContext)
+    const {dispatchState} = useContext(AppContext)
     const navigate = useNavigate()
 
     const handleLogout = () => {
@@ -21,18 +17,16 @@ function Header() {
         navigate('/login')
     }
 
-  return (
-    <div className="text-white flex gap-6 justify-center items-center h-[5rem] bg-slate-600">
-      <Link to={"/"}><AiOutlineHome /></Link>
-      <Link to='/dashboard'><FiUsers className='cursor-pointer hover:text-red-500'/></Link>
-      <Link to={"/categories"}><div>Categories</div></Link>
-      <Link to={"/dashboard/products"}><FaProductHunt className='cursor-pointer hover:text-red-500'/></Link>
-      <FiLogOut 
+    return ( <div className="flex justify-center items-center gap-[30px] h-[100px] w-full bg-green-500 text-white text-[2rem] p-[20px]">
+        <Link to='/'><FaHome className='cursor-pointer hover:text-red-500'/></Link>
+        <Link to='/dashboard'><FiUsers className='cursor-pointer hover:text-red-500'/></Link>
+        <Link to='/dashboard/products'><FaProductHunt className='cursor-pointer hover:text-red-500'/></Link>
+        <FiLogOut 
             className='cursor-pointer hover:text-red-500'
             onClick={handleLogout}    
         />
-    </div>
-  );
+
+    </div>  );
 }
 
 export default Header;

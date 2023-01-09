@@ -15,7 +15,6 @@ import EditProduct from './components/EditProduct'
 import Cart from './components/Cart'
 import Wishlist from './components/Wishlist'
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <ContextProvider>
@@ -28,7 +27,6 @@ root.render(
                 <Route element={<Login />} path='/login'/>
                 <Route element={<Cart />} path='/cart'/>
                 <Route element={<Wishlist />} path='/wishlist'/>
-
                 
                 <Route element={<AdminLayout />}>
                     <Route element={<Dashboard />} path='/dashboard'/>

@@ -1,110 +1,146 @@
-const User = require('../models/User.js')
+const User = require('../models/User')
+const bcrypt = require('bcrypt')
 
-module.exports.register = async (req,res) => {
+const SALT_ROUNDS = 10
+
+// module.exports = function register () {}
+
+module.exports.register = async (req, res) => {
 
     try {
+        
+        console.log('Hello from register', req.body)
 
-        await User.create(req.body);
-        res.send({success: true});
-         
+        const salt = await bcrypt.genSalt(SALT_ROUNDS)
+        // $2b$10$9JGEpnBtibe9xKYabBZMku
+        // $2b$10$i3zjWTa.zMU5Tw8474Z0Iu
+        // $2b$20$6CaKffM5wbeccrXNiE.Ku.
+
+        // $2b$10$Ypj9vdj/x6UvJ0C6Y3yuce
+        // $2b$10$Ypj9vdj/x6UvJ0C6Y3yuce4k5dW8fAUktewUd2H5QvILJky.HUwd.
+
+        const hashedPass = await bcrypt.hash(req.body.password, salt)
+        console.log("🚀 ~ module.exports.register= ~ hashedPass", hashedPass)
+
+        console.log("🚀 ~ module.exports.register= ~ salt", salt)
+
+        req.body.password = hashedPass // replace the pass from the body with the hashed one
+    
+        await User.create(req.body)
+    
+    
+        res.send({success: true})
+
     } catch (error) {
+        console.log("🚀 ~ register error", error.message)
 
-        console.log("Register error", error.message);
-        res.send({success: false, error: error.message});
+        res.send({success: false, error: error.message})
         
     }
 }
 
-module.exports.login = async (req,res) => {
+module.exports.login = async (req, res) => {
 
     try {
+        console.log('Hello from login', req.body)
 
+        // User.find(some object) RETURNS AN ARRAY
+        // User.findONe(some object) RETURNS AN OBJECT
         const user = await User
-        .findOne(req.body)
-        .select('-password -__v')
-    
-        // const user = await User.find({
-        //     email: req.body.email,
-        //     password: req.body.password
-        // })
+        .findOne({
+            
+            $or: [{email: req.body.emailOrUsername}, 
+                {username: req.body.emailOrUsername}
+            ]
         
-        console.log("user", user)
+        })
+        .select('-__v')
+        console.log("🚀 ~ user", user)
 
         if (!user) return res.send({success: false, errorId: 1})
-        res.send({success: true, user});
-         
-    } catch (error) {
 
-        console.log("Login error", error.message);
-        res.send({success: false, error: error.message});
+        const passwordMatch = await bcrypt.compare(req.body.password, user.password)
+        console.log("🚀 ~ passwordMatch", passwordMatch)
+    
+        if (passwordMatch) {
+
+            // remove password from user
+            const newUser = user.toObject()
+            
+            delete newUser.password
+
+            res.send({success: true, user: newUser})
+
+        } else {
+            return res.send({success: false, errorId: 1})
+        }
         
+    } catch (error) {
+        console.log("🚀 ~ login error", error.message)
+
+        res.send({success: false, error: error.message})
     }
+   
 }
 
-module.exports.list = async (req,res) => {
+module.exports.list = async (req, res) => {
 
     try {
+        console.log('Hello from list')
 
-        console.log('List')
-
-        const users = await User.find().select('-password -__v' )
-        console.log(users)
-
-        res.send({success: true, users});
-         
+        const users = await User.find().select('-password -__v')
+        console.log("🚀 ~ module.exports.list= ~ users", users)
+    
+        // THIS IS THE RESPONSE TO THE CLIENT
+        res.send({success: true, users})
     } catch (error) {
+        console.log("🚀 ~ list error", error.message)
 
-        console.log("List error", error.message);
-        res.send({success: false, error: error.message});
-        
+        res.send({success: false, error: error.message})
     }
+   
 }
 
-module.exports.delete = async (req,res) => {
+module.exports.delete = async (req, res) => {
 
     try {
+        console.log('Hello from delete', req.params)
 
-        console.log('Delete', req.params)
-
-        const deletedUser = await User.findByIdAndDelete(req.params._id);
+        const deletedUser= await User.findByIdAndDelete(req.params._id)
+        console.log("🚀 ~ module.exports.delete ~ deletedUser", deletedUser)
 
         if (!deletedUser) return res.send({success: false, errorId: 1})
-
-        res.send({success: true, deletedUser});
-         
+       
+        res.send({success: true})
     } catch (error) {
+        console.log("🚀 ~ delete error", error.message)
 
-        console.log("Delete error", error.message);
-        res.send({success: false, error: error.message});
-        
+        res.send({success: false, error: error.message})
     }
+   
 }
 
-module.exports.findOne = async (req,res) => {
+module.exports.findOne = async (req, res) => {
 
     try {
+        console.log('Hello from findone', req.params)
 
-        console.log('Find one', req.params)
-
-        const user = await User.findById(req.params._id).select('__v')
-        console.log('User', user)
-
-
-        res.send({success: true, user});
-         
+        const user = await User.findById(req.params._id).select('-__v')
+        console.log("🚀 ~ module.exports.findOne= ~ user", user)
+       
+        res.send({success: true, user})
     } catch (error) {
+        console.log("🚀 ~ findone error", error.message)
 
-        console.log("Find one error", error.message);
-        res.send({success: false, error: error.message});
-        
+        res.send({success: false, error: error.message})
     }
+   
 }
 
-module.exports.edit = async (req,res) => {
+module.exports.edit = async (req, res) => {
 
     try {
-
-        console.log('Edit', req.body)
+        console.log('Hello from user edit', req.body)
 
         if (!req.body.username ||
             !req.body.email ||
@@ -112,109 +148,57 @@ module.exports.edit = async (req,res) => {
             ) return res.send({success: false, errorId: 3})
 
         const {_id, ...user} = req.body
+        // console.log("🚀 ~ module.exports.edit= ~ _id", _id)
+        // console.log("🚀 ~ module.exports.edit= ~ user", user)
 
-        const updatedUser = await User.findByIdAndUpdate({_id}, {...user}, {new: true})
-        console.log('updatedUser', updatedUser)
+        // findByIdAndUpdate({filter}, {new values}, {options/parameters})
+
+        // const updatedUser = await User.findByIdAndUpdate({_id: req.body._id}, {
+        //     username: req.body.username,
+        //     password: req.body.password,
+        //     email: req.body.email
+        
+        // }, {new: true})
+
+        const updatedUser = await User.findByIdAndUpdate(_id, {...user}, {new: true})
+        console.log("🚀 ~ module.exports.edit= ~ updatedUser", updatedUser)
 
         if (!updatedUser) return res.send({success: false, errorId: 1})
-
-
-        res.send({success: true});
-         
+       
+        res.send({success: true})
     } catch (error) {
+        console.log("🚀 ~ edit user error", error.message)
 
-        console.log("Edit error", error.message);
-        res.send({success: false, error: error.message});
-        
+        res.send({success: false, error: error.message})
     }
+   
 }
 
-module.exports.addToCart = async (req,res) => {
+
+
+module.exports.addToWishlist = async (req, res) => {
 
     try {
-
-        console.log('Add to cart', req.body)
+        console.log('Hello from add to wishlist', req.body)
 
         const user = await User.findByIdAndUpdate(
-            {_id: req.body._id},
-            {
-                $push: {
-                    cart: req.body.product
-                }
-            },
-            {new: true}
-        )
-
-            console.log("cart user", user)
-
-        res.send({success: true});
-         
-    } catch (error) {
-
-        console.log("Add to cart error", error.message);
-        res.send({success: false, error: error.message});
-        
-    }
-}
-
-module.exports.removeFromCart = async (req,res) => {
-
-    try {
-
-        console.log('Remove from cart', req.body)
-
-        const user = await User.findById(req.body._id)
-
-        console.log("🚀 ~ file: userControllers.js:167 ~ module.exports.removeFromCart= ~ user", user)
-
-        const cart = user.cart.filter(item => item._id !== req.body.productId)
-        console.log("🚀 ~ file: userControllers.js:171 ~ module.exports.removeFromCart= ~ cart", cart)
-
-
-        const updatedUser = await User.findByIdAndUpdate(
-            {_id: req.body._id},
-            {cart},
-            {new: true}
-        )
-        console.log("🚀 ~ file: userControllers.js:179 ~ module.exports.removeFromCart= ~ updatedUser", updatedUser)
-
-
-        res.send({success: true, cart});
-         
-    } catch (error) {
-
-        console.log("Remove from cart error", error.message);
-        res.send({success: false, error: error.message});
-        
-    }
-}
-
-module.exports.addToWishlist = async (req,res) => {
-
-    try {
-
-        console.log('Add to wishlist', req.body)
-
-        const user = await User.findByIdAndUpdate(
-            {_id: req.body.user},
-            {
+            {_id: req.body.user}, // filter
+            { // updating
                 $push: {
                     wishlist: req.body.product
                 }
-            },
-            {new: true}
+            }, 
+            {new: true} // options
         )
-            console.log("🚀 ~ file: userController.js:207 ~ module.exports.addToWishlist= ~ user", user)
-            
+        console.log("🚀 ~ module.exports.addToWishlist= ~ user", user)
 
-        res.send({success: true});
-         
+        res.send({success: true})
     } catch (error) {
+        console.log("🚀 ~ add to wishlist error", error.message)
 
-        console.log("Add to wishlist error", error.message);
-        res.send({success: false, error: error.message});
-        
+        res.send({success: false, error: error.message})
     }
+
 }
 
 module.exports.removeFromWishlist = async (req, res) => {
@@ -227,9 +211,6 @@ module.exports.removeFromWishlist = async (req, res) => {
 
         const wishlist = user.wishlist.filter(item => { // step 2 filter the wishlist array
             return item.toString() !== req.body.product
-             
-            // return item != req.body.product //or this
-
         })
         
         console.log("🚀 ~ module.exports.removeFromWishlist= ~ wishlist", wishlist)

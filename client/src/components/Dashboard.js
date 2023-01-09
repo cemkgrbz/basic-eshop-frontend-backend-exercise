@@ -1,9 +1,9 @@
-import axios from "axios";
-import React, { useEffect, useContext } from "react";
+import {useContext, useEffect, useState} from 'react'
+import axios from 'axios'
 import {MdDeleteForever} from 'react-icons/md'
-import {Link} from 'react-router-dom';
-import {FiEdit} from 'react-icons/fi';
-import { AppContext } from "./Context";
+import {FiEdit} from 'react-icons/fi'
+import { AppContext } from './Context'
+import {Link} from 'react-router-dom'
 
 
 
@@ -11,32 +11,30 @@ function Dashboard() {
 
     const {state, dispatchState} = useContext(AppContext)
 
-    // const [users, setUsers] = useState([])
-
     useEffect(() => {
 
         async function getData() {
-            const response = await axios.get('/users/list')
 
-            console.log("getData - response", response)
+            // THIS IS THE REQUEST TO SERVER
+            const response = await axios.get('/users/list')
+            console.log("🚀 ~ getData ~ response", response)
 
             dispatchState({
                 type: 'loadUsers',
                 payload: response.data.users
             })
-            // setUsers(response.data.users)
         }
 
-        getData();
+        getData()
+
     }, [])
-    
 
     const handleDelete = async (id) => {
-        console.log("id -", id)
+        console.log("🚀 ~ handleDelete ~ id", id)
 
+        // users/delete/638f1ff53f20e82a05309685
         const response = await axios.delete('/users/delete/' + id)
-
-        console.log("response -", response)
+        console.log("🚀 ~ handleDelete ~ response", response)
 
         if (response.data.success) {
 
@@ -46,27 +44,29 @@ function Dashboard() {
             })
 
         } else {
-            if (response.data.errorId === 1 ) {
+            if (response.data.errorId === 1) {
                 alert('User not found')
             }
         }
-
     }
 
-    return (
-        
-        <div className='flex justify-center w-full flex-col gap-[20px]'>  
-        {/* <Header />  */}
-        <div className="ml-5 mt-3 font-bold">User List</div>         
-        {
+    const handleEdit = () => {}
+
+    return (  
+        <div className='p-[20px] flex justify-center w-full flex-col gap-[20px]'>
+
+            {
                 state.users.map(item => <div 
                 key={item._id}
-                className='flex gap-[20px] items-center ml-5'
-                >username: {item.username} 
-                <span></span>
-                email: {item.email} <MdDeleteForever className='hover:text-red-500 hover:cursor-pointer'
+                className='flex gap-[20px] items-center'
+                >username:{item.username} 
+                
+                email: {item.email} 
+                
+                <MdDeleteForever className='hover:text-red-500 hover:cursor-pointer'
                 onClick={() => handleDelete(item._id)}
                 />
+                
                 <Link to={'/dashboard/users/edit/' + item._id}>
                     <FiEdit 
                         className='hover:text-red-500 hover:cursor-pointer'
@@ -74,9 +74,8 @@ function Dashboard() {
                 </Link>
                 </div>)
             }
-
         </div>
-     );
+    );
 }
 
 export default Dashboard;

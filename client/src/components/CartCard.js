@@ -1,11 +1,41 @@
-import { useContext } from 'react';
-import {MdDeleteForever} from 'react-icons/md'
-import { AppContext } from './Context';
 import axios from 'axios';
+import { useContext, useState } from 'react';
+import {MdDeleteForever} from 'react-icons/md'
+import {BsFillCartCheckFill} from 'react-icons/bs'
+import { AppContext } from './Context';
 
-function CartCard({product}) {
+function CartCard({product, cbDelete}) {
+//    console.log("🚀 ~ CartCard ~ product", product)
+   
 
     const {state, dispatchState} = useContext(AppContext)
+
+    const [quantity, setQuantity] = useState(product.quantity)
+
+    const handleDecrease = () => {
+        
+        if (quantity === 0) return
+
+        setQuantity(prev => prev - 1)
+    }
+    const handleIncrease = () => setQuantity(prev => prev + 1)
+
+    const handleUpdate = async () => {
+
+        const response = await axios.post('/users/updatecart', {
+            _id: state.user._id,
+            product: product.product._id,
+            quantity
+        })
+        console.log("🚀 ~ handleDelete ~ response", response)
+
+        if (response.data.success) {
+            dispatchState({
+                type: 'addToCart',
+                payload: response.data.cart
+            })
+        }
+    }
 
     const handleDelete = async (productId) => {
 
@@ -13,31 +43,57 @@ function CartCard({product}) {
             _id: state.user._id,
             productId
         })
-        console.log("🚀 ~ file: CartCard.js:16 ~ handleDelete ~ response", response)
+        console.log("🚀 ~ handleDelete ~ response", response)
 
         if (response.data.success) {
-            dispatchState(
-                {
-                    type: "deleteFromCart",
-                    payload: response.data.cart
-                }
-            )
+            dispatchState({
+                type: 'deleteFromCart',
+                payload: response.data.cart
+            })
+
+            cbDelete(productId)
         }
     }
 
-    
-    return ( 
-        <div className="flex items-center justify-center p-4 gap-4">        
-            <span>{product.name}</span>
-            <span>{product.price}</span> 
-        <img className='w-[50px] h-[50px] rounded-full object-cover'
-         src={`/images/${product.image}`} alt=""/>
-            <MdDeleteForever className='hover:text-red-500 hover:cursor-pointer'
-                onClick={() => handleDelete(product._id)}
-                />
+    return (
+        <div 
 
-                </div>
-     );
+            className='flex width-full items-center 
+            justify-center
+            gap-[20px] mb-[20px]'
+
+        > 
+
+    <span>{product.product.name}</span>
+    <span>{product.product.price}</span>
+    <img  
+        className='w-[40px] h-[40px] rounded-full object-cover'
+        src={`/images/${product.product.image}`}/>
+
+    <button 
+        type="button" 
+        onClick={handleDecrease}
+        className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center text-[2rem] ">-</button>
+    
+    <input type="text" id="base-input" disabled className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[80px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-center" value={quantity}/>
+    
+    <button 
+        type="button" 
+        onClick={handleIncrease}
+        className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center text-[1rem]"
+    >
+        +
+    </button>
+    <BsFillCartCheckFill className='hover:text-red-500 hover:cursor-pointer text-[2rem]'
+        onClick={() => handleUpdate(product.product._id)}/>
+
+    <MdDeleteForever className='hover:text-red-500 hover:cursor-pointer text-[2rem]'
+        onClick={() => handleDelete(product.product._id)}
+    />
+
+
+    </div>
+      );
 }
 
 export default CartCard;

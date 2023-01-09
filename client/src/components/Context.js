@@ -1,126 +1,134 @@
 import { createContext, useReducer } from "react";
 
-export const AppContext = createContext();
+export const AppContext = createContext()
 
 export default function ContextProvider({children}) {
 
     const reducer = (state, action) => {
 
         switch(action.type) {
+
             case 'login':
-                return {
-                    ...state,
-                    user: {...action.payload}
-                }
+
+            return {
+                ...state,
+                user: {...action.payload}
+            }
 
             case 'loadUsers':
-                return {
-                    ...state,
-                    users: [...action.payload]
-                }
+
+            return {
+                ...state,
+                users: [...action.payload]
+            }
 
             case 'removeUser':
-    
-                    const oldUsers = [...state.users.filter(item => item._id !== action.payload)]
-                    return {
-                        ...state, 
-                        users: [...oldUsers]
-                    }
-                    
+
+                // filter state (user) to remove the deleted user
+                const oldUsers = [...state.users.filter(item => item._id !== action.payload)]
+
+                return {
+                    ...state,
+                    users: [...oldUsers]
+                }
+
             case 'loadProducts':
 
-                    return {
-                        ...state,
-                        products: [...action.payload]
-                    }
-                    
+            return {
+                ...state,
+                products: [...action.payload]
+            }
+
             case ('addProduct'):
 
-                    return {
-                        ...state,
-                        products: [...state.products, action.payload]
-                    }
-            
-            case 'removeProduct':
-                    
-                    const oldProducts = [...state.products.filter(item => item._id !== action.payload)]
+            return {
+                ...state,
+                products: [...state.products, action.payload]
+            }
 
-                    return {
-                        ...state, 
-                        products: [...oldProducts]
-                    }
+            case ('removeProduct'):
+
+            const oldProducts = [ ...state.products.filter(item => item._id !== action.payload)]
+
+            return {
+                ...state,
+                products: [...oldProducts]
+
+            }
 
             case 'editProduct':
 
-                    const editProducts = [...state.products]
-                    const idx = editProducts.findIndex(item => item._id === action.payload._id)
+                const editProducts = [...state.products]
 
-                    editProducts[idx] = {...action.payload}
+                const idx = editProducts.findIndex(item => item._id === action.payload._id)
 
-                    return {
-                        ...state,
-                        products: [...editProducts]
-                    }
+                editProducts[idx] = {...action.payload}
+                console.log("🚀 ~ reducer ~ editProducts", editProducts[idx])
+
+            return {
+                ...state,
+                products: [...editProducts]
+            }
 
             case 'logout':
 
-                    return {
-                        user: {},
-                        users: [],
-                        products: []
-
-                    }
+                return {
+                    user: {},
+                    users: [],
+                    products: []
+                }
 
             case 'addToCart':
 
-                    return {
-                        ...state,
-                        user: {
-                            ...state.user,
-                            cart: [...state.user.cart, action.payload]
-                        }
-                    }
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    cart: [...action.payload]
+                }
+            }
 
             case 'deleteFromCart':
 
-                    return {
-                        ...state,
-                        user: {
-                            ...state.user,
-                            cart: [...action.payload]
-                        }
+                return {
+                    ...state,
+                    user: {
+                        ...state.user,
+                        cart: [...action.payload]
                     }
-
+                }
+                
             case 'addProducts':
 
-                    return {
-                        ...state, 
-                        products: [...state.products, ...action.payload]
-                    }
+            return {
+                ...state,
+                products: [...state.products, ...action.payload]
+            }
 
             case 'addToWishlist':
 
-                    return {
-                        ...state,
-                        user: {
-                            ...state.user,
-                            wishlist: [...state.user.wishlist, action.payload]
-                        }
-                    }
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    wishlist: [...state.user.wishlist, action.payload]
+                }
+            }
+
 
             case 'deleteFromWishlist':
 
-                    return {
-                        ...state,
-                        user: {
-                            ...state.user,
-                            wishlist: [...action.payload]
-                        }
+                return {
+                    ...state,
+                    user: {
+                        ...state.user,
+                        wishlist: [...action.payload]
                     }
+                }
 
-                default:
-
-                return state
+            default:
+                
+            return state
         }
     }
 
@@ -131,7 +139,6 @@ export default function ContextProvider({children}) {
     })
 
     return <AppContext.Provider value={{state, dispatchState}}>
-        {children}
+     {children}
     </AppContext.Provider>
-} 
-
+}

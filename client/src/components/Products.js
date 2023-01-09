@@ -1,25 +1,22 @@
-import React from "react";
 import { useContext, useEffect } from 'react';
 import {IoMdAddCircle} from 'react-icons/io'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { AppContext } from './Context';
 
-import ProductCardAdmin from "./ProductCardAdmin";
+import { AppContext } from './Context'
+import ProductCardAdmin from './ProductCardAdmin';
 
 
 function Products() {
 
     const {state, dispatchState} = useContext(AppContext)
 
-    console.log(state)
-
     useEffect(() =>  {
 
         async function getData() {
 
             const response = await axios.get('/products/list')
-            console.log("getData ~ response", response)
+            console.log("🚀 ~ getData ~ response", response)
 
             if (response.data.success) dispatchState({
                 type: 'loadProducts',
@@ -28,7 +25,7 @@ function Products() {
         }
 
         getData()
-    }, []) 
+    }, [])
 
     const handleDelete = async (id) => {
 
@@ -42,7 +39,7 @@ function Products() {
 
     }
 
-    return ( 
+    return (  
         <div>
 
         <Link to='/dashboard/products/add'>
@@ -53,13 +50,13 @@ function Products() {
         </Link>
         {
             state.products.map(item => <ProductCardAdmin 
-            key={item._id}
-            product={item}
-            handleDelete={handleDelete}
+                key={item._id}
+                product={item}
+                handleDelete={handleDelete}
             />)
         }
         </div>
-        );
+    );
 }
 
 export default Products;

@@ -5,7 +5,7 @@ import axios from 'axios'
 import {AppContext} from './Context'
 import {MdDeleteForever} from 'react-icons/md'
 
-function Wishlist() {
+function Cart() {
 
     const {state, dispatchState} = useContext(AppContext)
 
@@ -74,7 +74,7 @@ function Wishlist() {
                             </p>
                         </div>
                         <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white text-[2rem]">
-                            {item.price} €
+                            ${item.price}
                             <MdDeleteForever className='hover:text-red-500 hover:cursor-pointer text-[2rem]'
                               onClick={() => handleDelete(item._id)}
                             />
@@ -96,4 +96,4 @@ function Wishlist() {
      );
 }
 
-export default Wishlist;
+export default Cart;

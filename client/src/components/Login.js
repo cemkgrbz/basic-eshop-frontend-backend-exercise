@@ -1,55 +1,43 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from 'react';
 import axios from 'axios'
-import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
-import { AppContext } from './Context'
-
+import {useNavigate, Link} from 'react-router-dom'
+import {AppContext} from './Context'
 
 function Login() {
 
-    const navigate = useNavigate();
-    const {state, dispatchState} = useContext(AppContext);
+  const navigate = useNavigate()
 
-    const [data, setData] = useState({
-        email: '',
-        password: ''
+  const {state, dispatchState} = useContext(AppContext)
+
+
+  const [data, setData] = useState({
+    email: '',
+    password: ''
+  })
+
+  const handleLogin = async () => {
+
+    const response = await axios.post('/users/login', data)
+    console.log("🚀 ~ handleLogin ~ response", response)
+
+    if (response.data.success) {
+
+      dispatchState({
+        type: 'login',
+        payload: response.data.user
       })
-    
-    const handleLogin = async () => {
-    
-        const response = await axios.post('/users/login', data)
-        console.log("handleLogin ~ response", response)
 
-        if (response.data.success) {
+      navigate('/')
+    } else {
 
-          dispatchState({
-            type: 'login',
-            payload: response.data.user
-          });
-
-          navigate('/')
-        } else {
-
-          if (response.data.errorId === 1) alert('Wrong email or password')
-    
-      }
-      }
+      if (response.data.errorId === 1) alert('Wrong email or password')
+    }
+  }
 
       console.log("🚀 ~ Register ~ state", state)
 
       return (
-        // <div className="flex flex-col gap-[2rem] w-fit items-end m-auto mt-[10rem] bg-slate-800 p-5 text-white ">
-        //     <label>
-        //         E-mail: <input value={data.email} onChange={e => setData({...data, email: e.target.value})} className="border-2 rounded text-black"/>
-        //     </label>
-        //     <label>
-        //         Password: <input value={data.password} onChange={e => setData({...data, password: e.target.value})} className="border-2 rounded text-black"/>
-        //     </label>
-        //     <button onClick={handleLogin} className="border-2 p-2 w-full hover:bg-red-600 hover:text-white rounded">Login</button>
-        //     <Link to={"/register"}><div>Register</div></Link>
-
-    
-        // </div> 
+        
         <div className="bg-slate-300 h-screen overflow-hidden flex items-center justify-center">
         <div className="bg-white lg:w-5/12 md:6/12 w-10/12 shadow-3xl">
           <div className="bg-gray-800 absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full p-4 md:p-8">
