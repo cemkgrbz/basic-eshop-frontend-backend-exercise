@@ -12,12 +12,6 @@ module.exports.register = async (req, res) => {
         console.log('Hello from register', req.body)
 
         const salt = await bcrypt.genSalt(SALT_ROUNDS)
-        // $2b$10$9JGEpnBtibe9xKYabBZMku
-        // $2b$10$i3zjWTa.zMU5Tw8474Z0Iu
-        // $2b$20$6CaKffM5wbeccrXNiE.Ku.
-
-        // $2b$10$Ypj9vdj/x6UvJ0C6Y3yuce
-        // $2b$10$Ypj9vdj/x6UvJ0C6Y3yuce4k5dW8fAUktewUd2H5QvILJky.HUwd.
 
         const hashedPass = await bcrypt.hash(req.body.password, salt)
         console.log("🚀 ~ module.exports.register= ~ hashedPass", hashedPass)
@@ -44,8 +38,6 @@ module.exports.login = async (req, res) => {
     try {
         console.log('Hello from login', req.body)
 
-        // User.find(some object) RETURNS AN ARRAY
-        // User.findONe(some object) RETURNS AN OBJECT
         const user = await User
         .findOne({
             
