@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cookieParser = require('cookie-parser')
 
 require('dotenv').config();
 
@@ -7,6 +8,7 @@ require('dotenv').config();
 const dbConnect = require('./config/db');
 dbConnect();
 
+app.use(cookieParser())
 app.use(express.json())
 app.use('/users', require('./routes/userRoutes'))
 app.use('/products', require('./routes/productRoutes'))
@@ -28,3 +30,5 @@ console.log(port)
 app.listen(port, () => {
     console.log('Server is up and running!', port)
 })
+
+// console.log('string:', Math.random().toString(36).slice(2))

@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const SALT_ROUNDS = 10
 
@@ -61,6 +62,10 @@ module.exports.login = async (req, res) => {
             
             delete newUser.password
 
+            const token = jwt.sign({id: user._id}, process.env.SECRET, {expiresIn: '1h'})
+
+            res.cookie('e04-eshop', token)
+
             res.send({success: true, user: newUser})
 
         } else {
@@ -78,7 +83,7 @@ module.exports.login = async (req, res) => {
 module.exports.list = async (req, res) => {
 
     try {
-        console.log('Hello from list')
+        console.log('Hello from list', req.user)
 
         const users = await User.find().select('-password -__v')
         console.log("🚀 ~ module.exports.list= ~ users", users)
@@ -165,8 +170,6 @@ module.exports.edit = async (req, res) => {
     }
    
 }
-
-
 
 module.exports.addToWishlist = async (req, res) => {
 
